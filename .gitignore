@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Files that might be created by Xcode / Swift
+.build/
+DerivedData/
+*.xcodeproj/
+*.xcworkspace/
+.swiftpm/
+
+# App Bundles
+*.app/
+build/
+
+# Antigravity / Agent logs and temp files
+.gemini/
+scratch/
+system_generated/
+*.log
