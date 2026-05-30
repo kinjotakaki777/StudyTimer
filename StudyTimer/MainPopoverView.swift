@@ -336,7 +336,7 @@ struct TimerDisplayCard: View {
         VStack(spacing: 8) {
             Text(timerManager.formatFullTime(timerManager.secondsElapsed))
                 .font(.system(size: 28, weight: .bold, design: .monospaced))
-                .foregroundColor(timerManager.isRunning ? .primary : .red)
+                .foregroundColor(timerManager.secondsElapsed == 0 ? .white : (timerManager.isRunning ? .primary : .red))
                 .contentTransition(.numericText(value: Double(timerManager.secondsElapsed)))
                 .shadow(color: Color.black.opacity(0.1), radius: 1, x: 0, y: 1)
             

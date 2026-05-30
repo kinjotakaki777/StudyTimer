@@ -25,6 +25,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         
         if let button = statusItem.button {
+            // Apply a rounded white border frame as requested
+            button.wantsLayer = true
+            button.layer?.cornerRadius = 5.0
+            button.layer?.borderWidth = 1.2
+            button.layer?.borderColor = NSColor.white.cgColor
+            
             // Use macOS system SF Symbol for a clean look
             button.image = NSImage(systemSymbolName: "timer", accessibilityDescription: "Study Timer")
             button.imagePosition = .imageLeading
@@ -34,7 +40,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             // Register for both left and right mouse click events
             button.sendAction(on: [.leftMouseUp, .rightMouseUp])
             
-            // Set initial red color as it starts paused
+            // Set initial white color as it starts at 0 seconds (start-prior)
             updateMenuBarTitle(timeString: "00:00")
         }
         
@@ -49,7 +55,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func updateMenuBarTitle(timeString: String) {
         guard let button = statusItem.button else { return }
         
-        let color = timerManager.isRunning ? NSColor.labelColor : NSColor.systemRed
+        let color: NSColor
+        if timerManager.secondsElapsed == 0 {
+            color = NSColor.white
+        } else if timerManager.isRunning {
+            color = NSColor.labelColor
+        } else {
+            color = NSColor.systemRed
+        }
+        
         let font = button.font ?? NSFont.systemFont(ofSize: 13)
         
         let attributedTitle = NSAttributedString(
