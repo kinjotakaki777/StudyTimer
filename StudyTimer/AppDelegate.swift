@@ -25,7 +25,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         
         if let button = statusItem.button {
-            button.title = "00:00"
             // Use macOS system SF Symbol for a clean look
             button.image = NSImage(systemSymbolName: "timer", accessibilityDescription: "Study Timer")
             button.imagePosition = .imageLeading
@@ -34,14 +33,33 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             button.action = #selector(statusBarButtonClicked(_:))
             // Register for both left and right mouse click events
             button.sendAction(on: [.leftMouseUp, .rightMouseUp])
+            
+            // Set initial red color as it starts paused
+            updateMenuBarTitle(timeString: "00:00")
         }
         
         // Update menu bar title when the timer ticks
         timerManager.onTick = { [weak self] timeString in
             DispatchQueue.main.async {
-                self?.statusItem.button?.title = timeString
+                self?.updateMenuBarTitle(timeString: timeString)
             }
         }
+    }
+    
+    func updateMenuBarTitle(timeString: String) {
+        guard let button = statusItem.button else { return }
+        
+        let color = timerManager.isRunning ? NSColor.labelColor : NSColor.systemRed
+        let font = button.font ?? NSFont.systemFont(ofSize: 13)
+        
+        let attributedTitle = NSAttributedString(
+            string: timeString,
+            attributes: [
+                .foregroundColor: color,
+                .font: font
+            ]
+        )
+        button.attributedTitle = attributedTitle
     }
     
     @objc func statusBarButtonClicked(_ sender: NSStatusBarButton) {

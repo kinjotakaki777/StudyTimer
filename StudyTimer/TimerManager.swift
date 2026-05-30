@@ -36,6 +36,7 @@ class TimerManager: ObservableObject {
     func start() {
         guard !isRunning else { return }
         isRunning = true
+        notifyTick() // Trigger immediately on start
         
         timer = Timer(timeInterval: 1.0, repeats: true) { [weak self] _ in
             guard let self = self else { return }
@@ -51,11 +52,13 @@ class TimerManager: ObservableObject {
         isRunning = false
         timer?.invalidate()
         timer = nil
+        notifyTick() // Trigger immediately on pause
     }
     
     func reset() {
         pause()
         secondsElapsed = 0
+        // pause() already calls notifyTick(), but reset sets secondsElapsed to 0, so call it again to update to 00:00
         notifyTick()
     }
     
